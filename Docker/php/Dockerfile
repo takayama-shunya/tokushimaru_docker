@@ -42,6 +42,18 @@ RUN apt-get update && \
                 --with-jpeg=/usr/include/ \
     && docker-php-ext-install -j$(nproc) gd
 
+#Composer install
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+RUN php composer-setup.php
+RUN php -r "unlink('composer-setup.php');"
+RUN mv composer.phar /usr/local/bin/composer
+
+ENV COMPOSER_ALLOW_SUPERUSER 1
+
+ENV COMPOSER_HOME /composer
+
+ENV PATH $PATH:/composer/vendor/bin
+
 WORKDIR /var/www/html
 
 # RUN composer global require "laravel/installer"
